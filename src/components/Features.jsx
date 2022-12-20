@@ -3,38 +3,85 @@
 import styled from 'styled-components'
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward'
 import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward'
+import { useState, useEffect } from 'react'
+import { userRequest } from '../requests'
 
 function Features() {
+  const [income, setIncome] = useState([])
+  const [percentage, setPercentage] = useState(0)
+
+  useEffect(() => {
+    const getIncome = async () => {
+      try {
+        const res = await userRequest.get('orders/income')
+        setIncome(res.data)
+        setPercentage(
+          ((res.data[1].total - res.data[0].total) / res.data[0].total) * 100
+        )
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getIncome()
+  }, [])
+
   return (
     <Container>
       <Item>
         <Title>Revenue</Title>
-        <Money>
-          <Amount>2200 €</Amount>
-          <Rate>
-            -12,5 <ArrowDownwardIcon className='negative' />
-          </Rate>
-        </Money>
+        {income.length > 0 ? (
+          <Money>
+            <Amount>{income[1].total * 0.6} €</Amount>
+            <Rate>
+              {Math.floor(percentage * 0.6)} %
+              {percentage < 0 ? (
+                <ArrowDownwardIcon className='negative' />
+              ) : (
+                <ArrowUpwardIcon className='positive' />
+              )}
+            </Rate>
+          </Money>
+        ) : (
+          <span>Loading...</span>
+        )}
         <Subtitle>Compared to last month</Subtitle>
       </Item>
       <Item>
         <Title>Sales</Title>
-        <Money>
-          <Amount>1700 €</Amount>
-          <Rate>
-            -9,4 <ArrowDownwardIcon className='negative' />
-          </Rate>
-        </Money>
+        {income.length > 0 ? (
+          <Money>
+            <Amount>{income[1].total} €</Amount>
+            <Rate>
+              {Math.floor(percentage)} %
+              {percentage < 0 ? (
+                <ArrowDownwardIcon className='negative' />
+              ) : (
+                <ArrowUpwardIcon className='positive' />
+              )}
+            </Rate>
+          </Money>
+        ) : (
+          <span>Loading...</span>
+        )}
         <Subtitle>Compared to last month</Subtitle>
       </Item>
       <Item>
         <Title>Cost</Title>
-        <Money>
-          <Amount>3400 €</Amount>
-          <Rate>
-            +6,8 <ArrowUpwardIcon />
-          </Rate>
-        </Money>
+        {income.length > 0 ? (
+          <Money>
+            <Amount>{income[1].total * 0.4} €</Amount>
+            <Rate>
+              {Math.floor(percentage * 0.4)} %
+              {percentage < 0 ? (
+                <ArrowDownwardIcon className='negative' />
+              ) : (
+                <ArrowUpwardIcon className='positive' />
+              )}
+            </Rate>
+          </Money>
+        ) : (
+          <span>Loading...</span>
+        )}
         <Subtitle>Compared to last month</Subtitle>
       </Item>
     </Container>
@@ -84,6 +131,9 @@ const Rate = styled.span`
   }
   .negative {
     color: red;
+  }
+  .positive {
+    color: green;
   }
 `
 
