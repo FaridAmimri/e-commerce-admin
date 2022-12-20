@@ -33,7 +33,6 @@ function Home() {
     const getUserStats = async () => {
       try {
         const res = await userRequest.get('users/statistics')
-        console.log(res.data)
         res.data.map((item) =>
           setUserStats((prev) => [
             // take prev item, spread it and add new data
