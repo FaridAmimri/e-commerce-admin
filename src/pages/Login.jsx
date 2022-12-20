@@ -5,18 +5,20 @@ import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import { useState } from 'react'
-// import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { login } from '../redux/apiCalls'
 
 function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  //   const dispatch = useDispatch()
-  //   const user = useSelector((state) => state.user)
+  const dispatch = useDispatch()
+  const user = useSelector((state) => state.user)
 
   const handleClick = (e) => {
     e.preventDefault()
-    // dispatch actions
+    login(dispatch, { username, password })
+    console.log(user)
   }
   return (
     <Container>
@@ -28,7 +30,7 @@ function Login() {
             id='username'
             label='Username'
             value={username}
-            color='success'
+            color='primary'
             onChange={(e) => setUsername(e.target.value)}
           />
           <TextField
@@ -37,16 +39,16 @@ function Login() {
             label='Password'
             value={password}
             type='password'
-            color='success'
+            color='primary'
             onChange={(e) => setPassword(e.target.value)}
           />
-          {/* {user.error && <Error>Invalid username or password</Error>} */}
+          {user.error && <Error>Invalid username or password</Error>}
           <Button
             variant='contained'
             size='large'
-            color='success'
+            color='primary'
             onClick={handleClick}
-            // disabled={user.isFetching}
+            disabled={user.isFetching}
           >
             LOGIN
           </Button>
@@ -91,3 +93,5 @@ const Link = styled.a`
   text-decoration: underline;
   cursor: pointer;
 `
+
+const Error = styled.span``
