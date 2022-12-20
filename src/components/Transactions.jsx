@@ -10,11 +10,27 @@ import TableCell from '@mui/material/TableCell'
 import Paper from '@mui/material/Paper'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
+import { useState, useEffect } from 'react'
+import { userRequest } from '../requests'
+import { format } from 'timeago.js'
 
 function Transactions() {
+  const [orders, setOrders] = useState([])
+
+  useEffect(() => {
+    const getOrders = async () => {
+      try {
+        const res = await userRequest.get('orders')
+        setOrders(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getOrders()
+  }, [])
   return (
     <Container>
-      <Title>Latest transactions</Title>
+      <Title>Latest Transactions</Title>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label='transactions table'>
           <TableHead>
@@ -26,86 +42,29 @@ function Transactions() {
             </TableRow>
           </TableHead>
           <TableBody>
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component='th' scope='row'>
-                <Profil>
-                  <Avatar
-                    src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-                    sx={{ width: 30, height: 30 }}
-                  />
-                  <Name>Susan Carol</Name>
-                </Profil>
-              </TableCell>
-              <TableCell>2 jun 2022</TableCell>
-              <TableCell>122.00 €</TableCell>
-              <TableCell>
-                <Button color='success' variant='outlined' size='small'>
-                  Approved
-                </Button>
-              </TableCell>
-            </TableRow>
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component='th' scope='row'>
-                <Profil>
-                  <Avatar
-                    src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-                    sx={{ width: 30, height: 30 }}
-                  />
-                  <Name>Susan Carol</Name>
-                </Profil>
-              </TableCell>
-              <TableCell>2 jun 2022</TableCell>
-              <TableCell>122.00 €</TableCell>
-              <TableCell>
-                <Button color='error' variant='outlined' size='small'>
-                  Declined
-                </Button>
-              </TableCell>
-            </TableRow>
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component='th' scope='row'>
-                <Profil>
-                  <Avatar
-                    src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-                    sx={{ width: 30, height: 30 }}
-                  />
-                  <Name>Susan Carol</Name>
-                </Profil>
-              </TableCell>
-              <TableCell>2 jun 2022</TableCell>
-              <TableCell>122.00 €</TableCell>
-              <TableCell>
-                <Button color='success' variant='outlined' size='small'>
-                  Approved
-                </Button>
-              </TableCell>
-            </TableRow>
-            <TableRow
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component='th' scope='row'>
-                <Profil>
-                  <Avatar
-                    src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-                    sx={{ width: 30, height: 30 }}
-                  />
-                  <Name>Susan Carol</Name>
-                </Profil>
-              </TableCell>
-              <TableCell>2 jun 2022</TableCell>
-              <TableCell>122.00 €</TableCell>
-              <TableCell>
-                <Button color='warning' variant='outlined' size='small'>
-                  Pending
-                </Button>
-              </TableCell>
-            </TableRow>
+            {orders.map((order) => (
+              <TableRow
+                key={order._id}
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+              >
+                <TableCell component='th' scope='row'>
+                  <Profil>
+                    <Avatar
+                      src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
+                      sx={{ width: 30, height: 30 }}
+                    />
+                    <Name>{order.userId}</Name>
+                  </Profil>
+                </TableCell>
+                <TableCell>{format(order.createdAt)}</TableCell>
+                <TableCell>{order.amount} €</TableCell>
+                <TableCell>
+                  <Button color='success' variant='outlined' size='small'>
+                    {order.status}
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </TableContainer>
