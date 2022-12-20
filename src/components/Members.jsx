@@ -4,102 +4,44 @@ import styled from 'styled-components'
 import Avatar from '@mui/material/Avatar'
 import Button from '@mui/material/Button'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import { useState, useEffect } from 'react'
+import { userRequest } from '../requests'
 
 function Members() {
+  const [users, setUsers] = useState([])
+
+  useEffect(() => {
+    const getUsers = async () => {
+      try {
+        const res = await userRequest.get('users')
+        setUsers(res.data)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getUsers()
+  }, [])
+
   return (
     <Container>
       <Title>New join Members</Title>
       <List>
-        <User>
-          <Avatar
-            src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-            sx={{ width: 30, height: 30 }}
-          />
-          <Details>
-            <Username>Anna Keller</Username>
-            <Job>Software Engineer</Job>
-          </Details>
-          <Button
-            color='primary'
-            variant='outlined'
-            size='small'
-            startIcon={<VisibilityIcon />}
-          >
-            Display
-          </Button>
-        </User>
-        <User>
-          <Avatar
-            src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-            sx={{ width: 30, height: 30 }}
-          />
-          <Details>
-            <Username>Anna Keller</Username>
-            <Job>Software Engineer</Job>
-          </Details>
-          <Button
-            color='primary'
-            variant='outlined'
-            size='small'
-            startIcon={<VisibilityIcon />}
-          >
-            Display
-          </Button>
-        </User>
-        <User>
-          <Avatar
-            src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-            sx={{ width: 30, height: 30 }}
-          />
-          <Details>
-            <Username>Anna Keller</Username>
-            <Job>Software Engineer</Job>
-          </Details>
-          <Button
-            color='primary'
-            variant='outlined'
-            size='small'
-            startIcon={<VisibilityIcon />}
-          >
-            Display
-          </Button>
-        </User>
-        <User>
-          <Avatar
-            src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-            sx={{ width: 30, height: 30 }}
-          />
-          <Details>
-            <Username>Anna Keller</Username>
-            <Job>Software Engineer</Job>
-          </Details>
-          <Button
-            color='primary'
-            variant='outlined'
-            size='small'
-            startIcon={<VisibilityIcon />}
-          >
-            Display
-          </Button>
-        </User>
-        <User>
-          <Avatar
-            src='https://images.pexels.com/photos/3992656/pexels-photo-3992656.png?auto=compress&cs=tinysrgb&dpr=2&w=500'
-            sx={{ width: 30, height: 30 }}
-          />
-          <Details>
-            <Username>Anna Keller</Username>
-            <Job>Software Engineer</Job>
-          </Details>
-          <Button
-            color='primary'
-            variant='outlined'
-            size='small'
-            startIcon={<VisibilityIcon />}
-          >
-            Display
-          </Button>
-        </User>
+        {users.map((user) => (
+          <User key={user._id}>
+            <Avatar src={user.image || ''} sx={{ width: 30, height: 30 }} />
+            <Details>
+              <Username>{user.username}</Username>
+            </Details>
+            <Button
+              color='primary'
+              variant='outlined'
+              size='small'
+              startIcon={<VisibilityIcon />}
+            >
+              Display
+            </Button>
+          </User>
+        ))}
       </List>
     </Container>
   )
@@ -140,9 +82,4 @@ const Details = styled.div`
 
 const Username = styled.span`
   font-weight: 600;
-`
-
-const Job = styled.span`
-  font-weight: 300;
-  font-size: 14px;
 `
