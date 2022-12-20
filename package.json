@@ -1,5 +1,5 @@
 {
-  "name": "react-admin-dashboard",
+  "name": "e-commerce-admin",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -20,6 +20,7 @@
     "react-router-dom": "^6.4.5",
     "react-scripts": "5.0.1",
     "recharts": "^2.2.0",
+    "redux-persist": "^6.0.0",
     "styled-components": "^5.3.6",
     "web-vitals": "^2.1.4"
   },
