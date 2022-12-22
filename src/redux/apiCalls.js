@@ -8,7 +8,13 @@ import {
   getProductFailure,
   deleteProductStart,
   deleteProductSuccess,
-  deleteProductFailure
+  deleteProductFailure,
+  updateProductStart,
+  updateProductSuccess,
+  updateProductFailure,
+  addProductStart,
+  addProductSuccess,
+  addProductFailure
 } from './productSlice'
 
 export const login = async (dispatch, user) => {
@@ -34,12 +40,32 @@ export const getProducts = async (dispatch) => {
 }
 
 export const deleteProduct = async (id, dispatch) => {
-  // Take dispatch only
   dispatch(deleteProductStart())
   try {
-    // const res = await userRequest.delete(`/products/delete/${id}`) // Take products data
-    dispatch(deleteProductSuccess(id)) // payload here will be res.data which is products data
+    const res = await userRequest.delete(`/products/delete/${id}`)
+    dispatch(deleteProductSuccess(res.data))
   } catch (error) {
     dispatch(deleteProductFailure())
+  }
+}
+
+export const updateProduct = async (id, product, dispatch) => {
+  dispatch(updateProductStart())
+  try {
+    //  const res = await userRequest.update(`/products/update/${id}`)
+    dispatch(updateProductSuccess(id, product))
+  } catch (error) {
+    dispatch(updateProductFailure())
+  }
+}
+
+export const addProduct = async (product, dispatch) => {
+  // Take dispatch only
+  dispatch(addProductStart())
+  try {
+    const res = await userRequest.post('products', product)
+    dispatch(addProductSuccess(res.data))
+  } catch (error) {
+    dispatch(addProductFailure())
   }
 }
