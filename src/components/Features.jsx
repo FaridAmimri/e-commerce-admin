@@ -29,59 +29,47 @@ function Features() {
     <Container>
       <Item>
         <Title>Revenue</Title>
-        {income.length > 0 ? (
-          <Money>
-            <Amount>{income[1].total * 0.6} €</Amount>
-            <Rate>
-              {Math.floor(percentage * 0.6)} %
-              {percentage < 0 ? (
-                <ArrowDownwardIcon className='negative' />
-              ) : (
-                <ArrowUpwardIcon className='positive' />
-              )}
-            </Rate>
-          </Money>
-        ) : (
-          <span>Loading...</span>
-        )}
+        <Money>
+          <Amount>{income[1]?.total * 0.6} €</Amount>
+          <Rate>
+            {Math.floor(percentage * 0.6)} %
+            {percentage < 0 ? (
+              <ArrowDownwardIcon className='negative' />
+            ) : (
+              <ArrowUpwardIcon className='positive' />
+            )}
+          </Rate>
+        </Money>
         <Subtitle>Compared to last month</Subtitle>
       </Item>
       <Item>
         <Title>Sales</Title>
-        {income.length > 0 ? (
-          <Money>
-            <Amount>{income[1].total} €</Amount>
-            <Rate>
-              {Math.floor(percentage)} %
-              {percentage < 0 ? (
-                <ArrowDownwardIcon className='negative' />
-              ) : (
-                <ArrowUpwardIcon className='positive' />
-              )}
-            </Rate>
-          </Money>
-        ) : (
-          <span>Loading...</span>
-        )}
+        <Money>
+          <Amount>{income[1]?.total} €</Amount>
+          <Rate>
+            {Math.floor(percentage)} %
+            {percentage < 0 ? (
+              <ArrowDownwardIcon className='negative' />
+            ) : (
+              <ArrowUpwardIcon className='positive' />
+            )}
+          </Rate>
+        </Money>
         <Subtitle>Compared to last month</Subtitle>
       </Item>
       <Item>
         <Title>Cost</Title>
-        {income.length > 0 ? (
-          <Money>
-            <Amount>{income[1].total * 0.4} €</Amount>
-            <Rate>
-              {Math.floor(percentage * 0.4)} %
-              {percentage < 0 ? (
-                <ArrowDownwardIcon className='negative' />
-              ) : (
-                <ArrowUpwardIcon className='positive' />
-              )}
-            </Rate>
-          </Money>
-        ) : (
-          <span>Loading...</span>
-        )}
+        <Money>
+          <Amount>{income[1]?.total * 0.4} €</Amount>
+          <Rate>
+            {Math.floor(percentage * 0.4)} %
+            {percentage < 0 ? (
+              <ArrowDownwardIcon className='negative' />
+            ) : (
+              <ArrowUpwardIcon className='positive' />
+            )}
+          </Rate>
+        </Money>
         <Subtitle>Compared to last month</Subtitle>
       </Item>
     </Container>
