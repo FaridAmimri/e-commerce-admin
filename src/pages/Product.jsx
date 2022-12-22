@@ -1,7 +1,6 @@
 /** @format */
 
 import styled from 'styled-components'
-import { productData } from '../data'
 import Button from '@mui/material/Button'
 import Chart from '../components/Chart'
 import Box from '@mui/material/Box'
@@ -12,20 +11,65 @@ import FormControl from '@mui/material/FormControl'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select from '@mui/material/Select'
-import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import { useState, useMemo, useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { userRequest } from '../requests'
 
 function Product() {
-  const [inStock, setInStock] = useState('yes')
-  const [isActive, setIsActive] = useState('yes')
+  const location = useLocation()
+  const productId = location.pathname.split('/')[2]
+
+  const [productStats, setProductStats] = useState([])
+
+  const product = useSelector(
+    (state) =>
+      state.product.products.find((product) => product._id === productId) // Find in products array which product._id match productId
+  )
+
+  const [inStock, setInStock] = useState(product.inStock)
 
   const handleStock = (event) => {
     setInStock(event.target.value)
   }
 
-  const handleIsActive = (event) => {
-    setIsActive(event.target.value)
-  }
+  const MONTHS = useMemo(
+    () => [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Agu',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec'
+    ],
+    []
+  )
+
+  useEffect(() => {
+    const getProductStats = async () => {
+      try {
+        const res = await userRequest.get(
+          'orders/income?productid=' + productId
+        )
+        res.data.map((item) =>
+          setProductStats((prev) => [
+            // take prev item, spread it and add new data
+            ...prev,
+            { name: MONTHS[item._id - 1], Sales: item.total }
+          ])
+        )
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getProductStats()
+  }, [productId, MONTHS])
 
   return (
     <Container>
@@ -42,7 +86,7 @@ function Product() {
         <Top>
           <Left>
             <Chart
-              data={productData}
+              data={productStats}
               title='Sales Performance'
               dataKey='Sales'
             />
@@ -50,29 +94,22 @@ function Product() {
           <Right>
             <ProductHeader>
               <ProductImage>
-                <Avatar
-                  src='https://images.pexels.com/photos/7156886/pexels-photo-7156886.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'
-                  sx={{ width: 32, height: 32 }}
-                />
+                <Avatar src={product.image} sx={{ width: 50, height: 50 }} />
               </ProductImage>
-              <ProductName>Apple Airpods</ProductName>
+              <ProductName>{product.title}</ProductName>
             </ProductHeader>
             <ProductDetails>
               <ProductItem>
                 <Key>id:</Key>
-                <Value>123</Value>
+                <Value>{product._id}</Value>
               </ProductItem>
               <ProductItem>
                 <Key>sales:</Key>
                 <Value>5123</Value>
               </ProductItem>
               <ProductItem>
-                <Key>active:</Key>
-                <Value>yes</Value>
-              </ProductItem>
-              <ProductItem>
                 <Key>in stock:</Key>
-                <Value>no</Value>
+                <Value>{product.inStock}</Value>
               </ProductItem>
             </ProductDetails>
           </Right>
@@ -84,18 +121,30 @@ function Product() {
             component='form'
             className='form'
             sx={{
-              '& .MuiTextField-root': { m: 1, width: '300px' }
+              '& .MuiTextField-root': { m: 1 }
             }}
           >
             <FormLeft>
               <TextField
-                label='Apple Airpod'
-                placeholder='Apple Airpod'
-                size='large'
+                label='Product Title'
+                placeholder={product.title}
                 variant='outlined'
-                style={{ margin: '15px 0' }}
+                style={{ margin: '15px 0', width: '200px' }}
               />
-              <FormControl style={{ margin: '15px 0' }}>
+              <TextField
+                label='Product Description'
+                placeholder={product.description}
+                variant='outlined'
+                style={{ margin: '15px 0', width: '400px' }}
+              />
+              <TextField
+                label='Product Price'
+                placeholder=''
+                type='number'
+                variant='outlined'
+                style={{ margin: '15px 0', width: '150px' }}
+              />
+              <FormControl style={{ margin: '15px 0', width: '150px' }}>
                 <InputLabel id='select'>In Stock</InputLabel>
                 <Select
                   labelId='inStock'
@@ -104,21 +153,8 @@ function Product() {
                   label='inStock'
                   onChange={handleStock}
                 >
-                  <MenuItem value='yes'>Yes</MenuItem>
-                  <MenuItem value='no'>No</MenuItem>
-                </Select>
-              </FormControl>
-              <FormControl style={{ margin: '15px 0' }}>
-                <InputLabel id='select'>Active</InputLabel>
-                <Select
-                  labelId='active'
-                  id='active'
-                  value={isActive}
-                  label='Active'
-                  onChange={handleIsActive}
-                >
-                  <MenuItem value='yes'>Yes</MenuItem>
-                  <MenuItem value='no'>No</MenuItem>
+                  <MenuItem value='true'>Yes</MenuItem>
+                  <MenuItem value='false'>No</MenuItem>
                 </Select>
               </FormControl>
             </FormLeft>
@@ -127,7 +163,7 @@ function Product() {
               <ProductAvatar>
                 <AvatarWrapper>
                   <Avatar
-                    src='https://images.pexels.com/photos/7156886/pexels-photo-7156886.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500'
+                    src={product.image}
                     sx={{ width: 100, height: 100 }}
                   />
                   <input
